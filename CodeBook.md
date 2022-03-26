@@ -7,10 +7,9 @@ output: html_document
 
 ## Run_analysis explanation
 
-1. We first load dplyr (and DT package to create interactive table at the end)
+1. We first load dplyr 
 ```{r}
 library(dplyr)
-library(DT)
 ```
 
 2. We create the data directory, download our data and unzip it.
@@ -62,8 +61,8 @@ features<-read.table("data/UCI HAR Dataset/features.txt")
 ```
 
 
-4. We add the name of variables in both train and test datasets
-and add the variable number of subject and the code of activity type to each. 
+4. We add the name of the features variables in both train and test datasets
+and add the variable number of subject and the code labels of activity type to each.  
 Then we merge both datasets and make a join with the code of acivity to have
 a new column with the actual name of the activity instead of a number. 
 
@@ -77,8 +76,7 @@ test <- bind_cols (subject_test, y_test, x_test)
 
 merged_data <- rbind (train, test) %>% 
   full_join (activities, by = c("V1...2"="V1"))
-dim(merged_data)
-str(merged_data)
+
 ```
 
 5. We tidy the data by selecting only the columns which refer to mean() and std(),
@@ -103,8 +101,6 @@ names(tidy_data) <- gsub("^t", "Time", names(tidy_data))
 names(tidy_data) <- gsub("^f", "Frequency", names(tidy_data))
 names(tidy_data) <- gsub("tBody", "TimeBody", names(tidy_data))
 
-dim(tidy_data)
-str(tidy_data)
 ```
 
 6. Finally, with the tidy dataset, we proceed to measure the average of all
@@ -116,6 +112,5 @@ averaged_data <- tidy_data %>%
   group_by(Subject, Activity) %>%
   summarize (across(1:66, mean), .groups = "keep")
 write.table(averaged_data, "averaged_data.txt", row.name=FALSE)
-datatable (averaged_data)
 ```
 
